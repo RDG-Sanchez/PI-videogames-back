@@ -19,7 +19,7 @@ const serv_getGenres = async () => {
      // const sendGenres = response.data.results.map((genre) => {
      //  return { name: genre.name };
      // });
-    await Genre.bulkCreate(sendGenres);
+    // await Genre.bulkCreate(sendGenres);
     return await Genre.findAll();
   } catch (error) {
     throw new Error(error.message);
