@@ -13,12 +13,12 @@ const { API_KEY } = process.env;
 
 const serv_getGenres = async () => {
   try {
-     // const response = await axios(
-     //  `http://api.rawg.io/api/genres?key=${API_KEY}`
-     // );
-     // const sendGenres = response.data.results.map((genre) => {
-     //  return { name: genre.name };
-     // });
+    // const response = await axios(
+    //   `http://api.rawg.io/api/genres?key=${API_KEY}`
+    // );
+    // const sendGenres = response.data.results.map((genre) => {
+    //   return { name: genre.name };
+    // });
     // await Genre.bulkCreate(sendGenres);
     return await Genre.findAll();
   } catch (error) {

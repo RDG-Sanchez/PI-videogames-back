@@ -72,7 +72,6 @@ const serv_getGameByID = async (id) => {
       );
       return response.data;
     } catch (error) {
-      console.log(error);
       throw new Error(error.message);
     }
   } else if (isUUID(id)) {
@@ -147,6 +146,34 @@ const serv_createGame = async (game) => {
     genres,
   } = game;
 
+  const validPlatforms = [
+    "PC",
+    "macOS",
+    "Linux",
+    "PlayStation 5",
+    "PlayStation 4",
+    "PlayStation 3",
+    "PlayStation 2",
+    "Xbox Series X/S",
+    "Xbox One",
+    "Xbox 360",
+    "Xbox",
+    "Nintendo Switch",
+    "Nintendo 3DS",
+    "NeoGeo",
+    "NES",
+    "SNES",
+    "Wii",
+    "GameCube",
+    "PSP",
+    "PS Vita",
+    "WEB",
+  ];
+
+  const validGenres = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+  ];
+
   if (
     !name ||
     !description_raw ||
@@ -170,6 +197,12 @@ const serv_createGame = async (game) => {
   if (platforms.length === 0)
     throw new Error("The 'platforms' element cannot be empty");
 
+  if (
+    platforms.filter((platform) => !validPlatforms.includes(platform)).length >
+    0
+  )
+    throw new Error("Platforms: There are invalid values");
+
   if (typeof background_image != "string")
     throw new Error("The value you entered for 'image' is incorrect");
 
@@ -179,21 +212,43 @@ const serv_createGame = async (game) => {
   if (typeof rating != "number")
     throw new Error("The value you entered for 'rating' is incorrect");
 
+  if (rating > 5)
+    throw new Error("The 'rating' must be less than or equal to 5");
+
+  if (rating === 1) throw new Error("The 'rating' must be greater than 1");
+
   if (!(genres instanceof Array))
     throw new Error("The value you entered for 'genres' is incorrect");
 
   if (genres.length === 0)
     throw new Error("The 'genres' element cannot be empty");
 
+  if (
+    genres
+      .map((genre) => Number(genre))
+      .filter((genre) => !validGenres.includes(genre)).length > 0
+  )
+    throw new Error("Genres: There are invalid values");
+
   if (new Date(released).getFullYear() < 1950)
     throw new Error("The 'released' value must have a year after 1950");
 
   try {
+    const genresFilter = genres
+      .map((genre) => Number(genre))
+      .filter((genre) => validGenres.includes(genre));
+
+    const platformsFilter = platforms
+      .filter((platform) => validPlatforms.includes(platform))
+      .map((platform) => {
+        return { platform: { name: platform } };
+      });
+
     const [videogame, created] = await Videogame.findOrCreate({
       where: { name },
       defaults: {
         description_raw,
-        platforms,
+        platforms: platformsFilter,
         background_image,
         released,
         rating,
@@ -201,7 +256,7 @@ const serv_createGame = async (game) => {
     });
 
     if (created) {
-      await videogame.addGenre(genres);
+      await videogame.addGenre(genresFilter);
       return videogame;
     } else {
       throw new Error("The game you tried to create already exists");
