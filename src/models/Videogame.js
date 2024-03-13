@@ -16,7 +16,11 @@ module.exports = (sequelize) => {
         unique: true,
         validate: {
           notEmpty: {
-            msg: "You must enter a value for 'name'",
+            msg: "NAME: You must enter a value",
+          },
+          len: {
+            args: [1, 35],
+            msg: "NAME: Must be between 1 and 35 characters",
           },
         },
       },
@@ -25,11 +29,11 @@ module.exports = (sequelize) => {
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "You must enter a value for 'description_raw'",
+            msg: "DESCRIPTION: You must enter a value",
           },
           len: {
             args: [30, 2500],
-            msg: "Must be between 30 and 2500 characters.",
+            msg: "DESCRIPTION: Must be between 30 and 2500 characters.",
           },
         },
       },
@@ -38,19 +42,23 @@ module.exports = (sequelize) => {
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "You must enter a value for 'platforms'",
+            msg: "PLATFORMS: You must enter a value",
           },
         },
       },
       background_image: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "You must enter a value for 'background_image'",
+            msg: "IMAGE URL: You must enter a value",
           },
           isUrl: {
-            msg: "The URL entered is not valid",
+            msg: "IMAGE URL: The URL entered is not valid",
+          },
+          max: {
+            args: [[512]],
+            msg: "IMAGE URL: Maximum must be 512 characters",
           },
         },
       },
@@ -59,11 +67,11 @@ module.exports = (sequelize) => {
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "You must enter a value for 'released'",
+            msg: "RELEASE DATE: You must enter a value",
           },
           isAfter: {
             args: ["1950-01-01"],
-            msg: "You must enter a year after 1950",
+            msg: "RELEASE DATE: You must enter a year after 1950",
           },
         },
       },
@@ -72,10 +80,10 @@ module.exports = (sequelize) => {
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "You must enter a value for 'rating'",
+            msg: "RATING: You must enter a value",
           },
-          min: { args: [[1]], msg: "Minimum must be 1" },
-          max: { args: [[5]], msg: "Maximum must be 5" },
+          min: { args: [[1]], msg: "RATING: Minimum must be 1" },
+          max: { args: [[5]], msg: "RATING: Maximum must be 5" },
         },
       },
       database: {
