@@ -255,16 +255,6 @@ const serv_createGame = async (game) => {
       },
     });
 
-    console.log("Platforms filterless", platforms);
-    console.log("Videogame Done", {
-      name,
-      description_raw,
-      platforms: platformsFilter,
-      background_image,
-      released,
-      rating,
-    });
-
     if (created) {
       await videogame.addGenre(genresFilter);
       return videogame;
